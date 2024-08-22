@@ -3,26 +3,60 @@ import { useState } from "react";
 
 export default function InputForm() {
   // Estados para capturar los datos del usuario
-  const [material, setMaterial] = useState("");
+  const [material, setMaterial] = useState("PLA");
   const [weight, setWeight] = useState("");
   const [hours, setHours] = useState("");
   const [minutes, setMinutes] = useState("");
   const [electricityCost, setElectricityCost] = useState("");
 
+  // Estado para almacenar el resultado
+  const [result, setResult] = useState(null);
+
+  // Precios de los materiales
+  const materialPrices = {
+    PLA: 14000, // Precio por kilogramo en pesos argentinos
+    PETG: 18000,
+    ABS: 15000,
+    otro: 13000,
+  };
+
   // Manejador del envío del formulario
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({
-      material,
-      weight,
-      hours,
-      minutes,
-      electricityCost,
+
+    // Conversión de horas y minutos en total de horas
+    const totalHours = parseFloat(hours) + parseFloat(minutes) / 60;
+
+    // Cálculos de costos
+    const materialCost = (parseFloat(weight) / 1000) * materialPrices[material]; // Precio según el material seleccionado
+    const electricityUsed = totalHours * 0.25; // Consumo de 250W convertido a kWh
+    const electricityCostTotal = electricityUsed * parseFloat(electricityCost);
+
+    // Desgaste de la impresora
+    const wearAndTearCost = totalHours * 30; // $30 por hora
+
+    // Costo total antes del margen de error y ganancia
+    const baseCost = materialCost + electricityCostTotal + wearAndTearCost;
+
+    // Aplicar margen de error del 30%
+    const errorMarginCost = baseCost * 1.3;
+
+    // Aplicar margen de ganancia 2x
+    const finalCost = errorMarginCost * 2;
+
+    // Guardamos el resultado
+    setResult({
+      materialCost,
+      electricityCostTotal,
+      wearAndTearCost,
+      baseCost,
+      errorMarginCost,
+      finalCost,
     });
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
       <form
         className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md"
         onSubmit={handleSubmit}
@@ -32,14 +66,19 @@ export default function InputForm() {
         </h2>
 
         {/* Campo para el Material */}
-        <label className="block mb-2 text-sm font-medium text-green-600 ">Material</label>
-        <input
+        <label className="block mb-2 text-sm font-medium text-green-600">
+          Material
+        </label>
+        <select
           className="w-full p-2 mb-4 border border-gray-300 rounded-md text-blue-900"
-          type="text"
           value={material}
           onChange={(e) => setMaterial(e.target.value)}
-          placeholder="Ej: PLA, ABS, PETG"
-        />
+        >
+          <option value="PLA">PLA</option>
+          <option value="PETG">PETG</option>
+          <option value="ABS">ABS</option>
+          <option value="otro">Otro</option>
+        </select>
 
         {/* Campo para el Peso */}
         <label className="block mb-2 text-sm font-medium text-green-600">
@@ -94,6 +133,38 @@ export default function InputForm() {
           Calcular
         </button>
       </form>
+
+      {/* Mostrar resultados si los hay */}
+      {result && (
+        <div className="bg-white mt-6 p-4 rounded-lg shadow-lg w-full max-w-md">
+          <h3 className="text-xl font-bold mb-4 text-center text-green-400">
+            Resultados
+          </h3>
+          <p className="text-green-600">
+            <strong>Costo del material:</strong>{" "}
+            {result.materialCost.toFixed(2)} pesos
+          </p>
+          <p className="text-green-600">
+            <strong>Costo de electricidad:</strong>{" "}
+            {result.electricityCostTotal.toFixed(2)} pesos
+          </p>
+          <p className="text-green-600">
+            <strong>Costo por desgaste de impresora:</strong>{" "}
+            {result.wearAndTearCost.toFixed(2)} pesos
+          </p>
+          <p className="text-green-600">
+            <strong>Costo total antes del margen:</strong>{" "}
+            {result.baseCost.toFixed(2)} pesos
+          </p>
+          <p className="text-green-600">
+            <strong>Costo con margen de error:</strong>{" "}
+            {result.errorMarginCost.toFixed(2)} pesos
+          </p>
+          <p className="text-green-600">
+            <strong>Precio final:</strong> {result.finalCost.toFixed(2)} pesos
+          </p>
+        </div>
+      )}
     </div>
   );
 }
