@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Calculadora de Costos de Impresión 3D
 
-## Getting Started
+![Calculadora de Costos de Impresión 3D](https://ruta-de-tu-imagen.jpg) <!-- Imagen opcional -->
 
-First, run the development server:
+## Descripción
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+La **Calculadora de Costos de Impresión 3D** es una aplicación web desarrollada con **Next.js** y **Tailwind CSS** que permite a los usuarios calcular el costo de imprimir piezas en 3D. Incluye costos como el material, electricidad, desgaste de la impresora y márgenes de error, para generar un precio sugerido de venta de la pieza.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Características
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Selección del tipo de material y precio por kilogramo.
+- Cálculo automático de los costos de material, electricidad, desgaste y margen de error.
+- Generación del precio final sugerido de venta.
+- Interfaz moderna y accesible con animaciones suaves.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Tecnologías utilizadas
 
-## Learn More
+- **Next.js**: Framework de React para aplicaciones web.
+- **Tailwind CSS**: Framework de CSS para estilizado rápido y responsivo.
+- **Framer Motion**: Biblioteca de animaciones para React.
+- **Poppins**: Tipografía moderna usada en la interfaz.
 
-To learn more about Next.js, take a look at the following resources:
+## Instalación
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Sigue estos pasos para instalar y ejecutar la aplicación localmente:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. Clona este repositorio:
+   ```bash
+   git clone https://github.com/tuusuario/tu-repo.git
