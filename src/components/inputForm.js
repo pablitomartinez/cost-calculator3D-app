@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { motion } from "framer-motion";
+import "@fontsource/poppins"; // Importa la fuente globalmente
 
 export default function InputForm() {
   // Estados para capturar los datos del usuario
@@ -8,17 +10,10 @@ export default function InputForm() {
   const [hours, setHours] = useState("");
   const [minutes, setMinutes] = useState("");
   const [electricityCost, setElectricityCost] = useState("");
+  const [materialPrice, setMaterialPrice] = useState(14000); // Precio por defecto de PLA
 
   // Estado para almacenar el resultado
   const [result, setResult] = useState(null);
-
-  // Precios de los materiales
-  const materialPrices = {
-    PLA: 14000, // Precio por kilogramo en pesos argentinos
-    PETG: 18000,
-    ABS: 15000,
-    otro: 13000,
-  };
 
   // Manejador del envío del formulario
   const handleSubmit = (e) => {
@@ -28,11 +23,11 @@ export default function InputForm() {
     const totalHours = parseFloat(hours) + parseFloat(minutes) / 60;
 
     // Cálculos de costos
-    const materialCost = (parseFloat(weight) / 1000) * materialPrices[material]; // Precio según el material seleccionado
-    const electricityUsed = totalHours * 0.25; // Consumo de 250W convertido a kWh
+    const materialCost =
+      (parseFloat(weight) / 1000) * parseFloat(materialPrice);
+    const electricityUsed = totalHours * 0.25;
     const electricityCostTotal = electricityUsed * parseFloat(electricityCost);
 
-    // Desgaste de la impresora
     const wearAndTearCost = totalHours * 30; // $30 por hora
 
     // Costo total antes del margen de error y ganancia
@@ -56,115 +51,196 @@ export default function InputForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-      <form
-        className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md"
-        onSubmit={handleSubmit}
-      >
-        <h2 className="text-2xl font-bold mb-4 text-center text-green-400">
-          Calcular Costo de Impresión 3D
-        </h2>
-
-        {/* Campo para el Material */}
-        <label className="block mb-2 text-sm font-medium text-green-600">
-          Material
-        </label>
-        <select
-          className="w-full p-2 mb-4 border border-gray-300 rounded-md text-blue-900"
-          value={material}
-          onChange={(e) => setMaterial(e.target.value)}
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+      <div className="w-full max-w-7xl flex flex-col md:flex-row items-start space-y-8 md:space-y-0 md:space-x-8">
+        {/* Formulario */}
+        <form
+          className="bg-white p-8 rounded-lg shadow-lg w-full md:w-2/3"
+          onSubmit={handleSubmit}
+          style={{ fontFamily: "Poppins, sans-serif" }}
         >
-          <option value="PLA">PLA</option>
-          <option value="PETG">PETG</option>
-          <option value="ABS">ABS</option>
-          <option value="otro">Otro</option>
-        </select>
+          <h2 className="text-3xl font-bold mb-6 text-left text-blue-600">
+            Calcular Costo de Impresión 3D
+          </h2>
 
-        {/* Campo para el Peso */}
-        <label className="block mb-2 text-sm font-medium text-green-600">
-          Peso del filamento (gramos)
-        </label>
-        <input
-          className="w-full p-2 mb-4 border border-gray-300 rounded-md text-blue-900"
-          type="number"
-          value={weight}
-          onChange={(e) => setWeight(e.target.value)}
-          placeholder="Ej: 76"
-        />
+          {/* Campo para el Material */}
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Material
+          </label>
+          <select
+            className="w-full p-3 mb-1 border border-gray-300 rounded-md text-blue-900"
+            value={material}
+            onChange={(e) => setMaterial(e.target.value)}
+          >
+            <option value="PLA">PLA</option>
+            <option value="PETG">PETG</option>
+            <option value="ABS">ABS</option>
+            <option value="otro">Otro</option>
+          </select>
+          <p className="text-xs text-gray-500 mb-4">
+            Selecciona el material utilizado para la impresión.
+          </p>
 
-        {/* Campo para el Tiempo de Impresión */}
-        <label className="block mb-2 text-sm font-medium text-green-600">
-          Horas de impresión
-        </label>
-        <div className="flex space-x-4">
+          {/* Campo para el Precio del Material */}
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Precio del material (por kg)
+          </label>
           <input
-            className="w-1/2 p-2 mb-4 border border-gray-300 rounded-md text-blue-900"
+            className="w-full p-3 mb-1 border border-gray-300 rounded-md text-blue-900"
             type="number"
-            value={hours}
-            onChange={(e) => setHours(e.target.value)}
-            placeholder="Horas"
+            value={materialPrice}
+            onChange={(e) => setMaterialPrice(e.target.value)}
           />
+          <p className="text-xs text-gray-500 mb-4">
+            Ingresa el precio actual del filamento en pesos argentinos por
+            kilogramo.
+          </p>
+
+          {/* Campo para el Peso */}
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Peso del filamento (gramos)
+          </label>
           <input
-            className="w-1/2 p-2 mb-4 border border-gray-300 rounded-md text-blue-900"
+            className="w-full p-3 mb-1 border border-gray-300 rounded-md text-blue-900"
             type="number"
-            value={minutes}
-            onChange={(e) => setMinutes(e.target.value)}
-            placeholder="Minutos"
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+            placeholder="Ej: 76"
           />
-        </div>
+          <p className="text-xs text-gray-500 mb-4">
+            Ingresa el peso del filamento utilizado en gramos.
+          </p>
 
-        {/* Campo para el Costo de la Electricidad */}
-        <label className="block mb-2 text-sm font-medium text-green-600">
-          Costo de electricidad (por kWh)
-        </label>
-        <input
-          className="w-full p-2 mb-4 border border-gray-300 rounded-md text-blue-900"
-          type="number"
-          value={electricityCost}
-          onChange={(e) => setElectricityCost(e.target.value)}
-          placeholder="Ej: 63.71"
-        />
+          {/* Campo para el Tiempo de Impresión */}
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Horas de impresión
+          </label>
+          <div className="flex space-x-4">
+            <input
+              className="w-1/2 p-3 mb-1 border border-gray-300 rounded-md text-blue-900"
+              type="number"
+              value={hours}
+              onChange={(e) => setHours(e.target.value)}
+              placeholder="Horas"
+            />
+            <input
+              className="w-1/2 p-3 mb-1 border border-gray-300 rounded-md text-blue-900"
+              type="number"
+              value={minutes}
+              onChange={(e) => setMinutes(e.target.value)}
+              placeholder="Minutos"
+            />
+          </div>
+          <p className="text-xs text-gray-500 mb-4">
+            Ingresa las horas y minutos totales de impresión.
+          </p>
 
-        {/* Botón de envío */}
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
-        >
-          Calcular
-        </button>
-      </form>
+          {/* Campo para el Costo de la Electricidad */}
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Costo de electricidad (por kWh)
+          </label>
+          <input
+            className="w-full p-3 mb-1 border border-gray-300 rounded-md text-blue-900"
+            type="number"
+            value={electricityCost}
+            onChange={(e) => setElectricityCost(e.target.value)}
+            placeholder="Ej: 63.71"
+          />
+          <p className="text-xs text-gray-500 mb-4">
+            Ingresa el costo de la electricidad en tu región en pesos por kWh.
+          </p>
 
-      {/* Mostrar resultados si los hay */}
-      {result && (
-        <div className="bg-white mt-6 p-4 rounded-lg shadow-lg w-full max-w-md">
-          <h3 className="text-xl font-bold mb-4 text-center text-green-400">
-            Resultados
-          </h3>
-          <p className="text-green-600">
-            <strong>Costo del material:</strong>{" "}
-            {result.materialCost.toFixed(2)} pesos
-          </p>
-          <p className="text-green-600">
-            <strong>Costo de electricidad:</strong>{" "}
-            {result.electricityCostTotal.toFixed(2)} pesos
-          </p>
-          <p className="text-green-600">
-            <strong>Costo por desgaste de impresora:</strong>{" "}
-            {result.wearAndTearCost.toFixed(2)} pesos
-          </p>
-          <p className="text-green-600">
-            <strong>Costo total antes del margen:</strong>{" "}
-            {result.baseCost.toFixed(2)} pesos
-          </p>
-          <p className="text-green-600">
-            <strong>Costo con margen de error:</strong>{" "}
-            {result.errorMarginCost.toFixed(2)} pesos
-          </p>
-          <p className="text-green-600">
-            <strong>Precio final:</strong> {result.finalCost.toFixed(2)} pesos
-          </p>
-        </div>
-      )}
+          {/* Botón de envío */}
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700"
+          >
+            Calcular
+          </button>
+        </form>
+
+        {/* Mostrar resultados si los hay */}
+        {result && (
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="bg-white p-8 rounded-lg shadow-lg w-full md:w-2/3"
+            style={{ fontFamily: "Poppins, sans-serif" }}
+          >
+            <h3 className="text-xl font-bold mb-6 text-center text-blue-600">
+              Resultados
+            </h3>
+
+            <div className="space-y-4">
+              <div>
+                <p className="text-blue-800 font-semibold">
+                  Costo del material: {result.materialCost.toFixed(2)} pesos
+                </p>
+                <p className="text-sm text-gray-600">
+                  Esto representa el costo del filamento utilizado basado en el
+                  peso y precio por kg.
+                </p>
+              </div>
+
+              <div>
+                <p className="text-blue-800 font-semibold">
+                  Costo de electricidad:{" "}
+                  {result.electricityCostTotal.toFixed(2)} pesos
+                </p>
+                <p className="text-sm text-gray-600">
+                  Este es el costo de la electricidad para la duración total de
+                  la impresión.
+                </p>
+              </div>
+
+              <div>
+                <p className="text-blue-800 font-semibold">
+                  Costo por desgaste de impresora:{" "}
+                  {result.wearAndTearCost.toFixed(2)} pesos
+                </p>
+                <p className="text-sm text-gray-600">
+                  El desgaste se estima a $30 por hora de impresión.
+                </p>
+              </div>
+
+              <div>
+                <p className="text-blue-800 font-semibold">
+                  Costo total antes del margen: {result.baseCost.toFixed(2)}{" "}
+                  pesos
+                </p>
+                <p className="text-sm text-gray-600">
+                  Este es el costo total de los materiales, electricidad y
+                  desgaste antes de aplicar los márgenes de error y ganancia.
+                </p>
+              </div>
+
+              <div>
+                <p className="text-blue-800 font-semibold">
+                  Costo con margen de error: {result.errorMarginCost.toFixed(2)}{" "}
+                  pesos
+                </p>
+                <p className="text-sm text-gray-600">
+                  El margen de error del 30% se añade para cubrir posibles
+                  imprevistos o fallos en la impresión.
+                </p>
+              </div>
+
+              <div className="border-double border-4 border-green-500 p-4 ">
+                <p className="text-green-500 font-semibold">
+                  Precio final: {result.finalCost.toFixed(2)} pesos
+                </p>
+                <p className="text-sm text-gray-600">
+                  Este es el precio sugerido de venta para la pieza impresa,
+                  incluyendo todos los costos y márgenes. Este precio te asegura
+                  cubrir los costos de materiales, energía, desgaste y un margen
+                  de ganancia adecuado.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 }
